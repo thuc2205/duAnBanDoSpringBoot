@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("${api.prefix}/productDetail")
@@ -92,7 +93,7 @@ public class ProductDetailController {
             List<String> errCreateProduct = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
-                    .toList();
+                    .collect(Collectors.toList());
         }
         productDetaiServiceimpl.create(productDetailDTO);
         return "redirect:/api/thuc/productDetail/list";

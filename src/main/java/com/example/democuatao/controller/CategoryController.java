@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("${api.prefix}/categories")
@@ -25,7 +26,7 @@ public class CategoryController {
             List<String> err = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
-                    .toList();
+                    .collect(Collectors.toList());
         }
         categoryService.create(categoriesDto);
         return "redirect:/api/thuc/categories";

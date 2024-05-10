@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("${api.prefix}/user")
@@ -27,7 +28,7 @@ public class UserController {
             List<String> errVoucher = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
-                    .toList();
+                    .collect(Collectors.toList());
 //            return ResponseEntity.badRequest().body()
         }
        try {

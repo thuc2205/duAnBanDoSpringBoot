@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class OrderController {
             List<String> Order = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
-                    .toList();
+                    .collect(Collectors.toList());
         }
             Orders orders = orderService.createOrder(orderDTO);
         return ResponseEntity.ok(orders);

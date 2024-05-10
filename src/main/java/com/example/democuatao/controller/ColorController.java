@@ -13,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("${api.prefix}/color")
@@ -26,7 +27,7 @@ public class ColorController {
             List<String> errCreateColor = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
-                    .toList();
+                    .collect(Collectors.toList());
         }
         colorService.create(colorDTO);
         return "redirect:/api/thuc/color";

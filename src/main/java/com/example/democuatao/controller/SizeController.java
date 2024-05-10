@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("${api.prefix}/size")
@@ -27,7 +28,7 @@ public class SizeController {
             List<String> errMessage = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
-                    .toList();
+                    .collect(Collectors.toList());
         }
         sizeService.createSize(sizeDTO);
         return "redirect:/api/thuc/size/list";

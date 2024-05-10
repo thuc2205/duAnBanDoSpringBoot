@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class OrderDetailController {
                 List<String> Order = result.getFieldErrors()
                         .stream()
                         .map(FieldError::getDefaultMessage)
-                        .toList();
+                        .collect(Collectors.toList());
             }
             orderDetailService.createOrder(orderDetailDTO);
             return ResponseEntity.ok(orderDetailDTO);
