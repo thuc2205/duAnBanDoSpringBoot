@@ -35,6 +35,7 @@ public class CategoryController {
     public String getAllCategories(Model model){
         model.addAttribute("categories",categoryService.getAllReal());
 
+
         return "categories";
     }
 
