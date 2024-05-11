@@ -82,7 +82,7 @@ public class OrderServiceImpl implements IOrderService{
 
     @Override
     public List<Orders> findByUserId(int userId) {
-        return null;
+        return orderRepo.findByUserId(userId);
     }
 
     @Override

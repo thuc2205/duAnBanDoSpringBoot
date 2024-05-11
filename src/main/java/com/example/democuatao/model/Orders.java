@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Entity
@@ -64,5 +66,8 @@ public class Orders {
     @ManyToOne
     @JoinColumn(name = "voucher_id")
     private Voucher voucher;
+
+    @OneToMany( cascade = CascadeType.ALL,mappedBy = "orders")
+    private List<OrderDetails> orderDetails = new ArrayList<>();
 
 }

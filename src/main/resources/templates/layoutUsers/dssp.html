@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{user/indexx.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container-fluid">
+        <div class="thuc-sheet row">
+            <div class="row">
+                <article class="col-3 ms-auto mt-5">
+                    <div class="card" style="width: 18rem">
+                        <div class="card-header">
+                            <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    class="bi bi-card-list"
+                                    viewBox="0 0 16 16"
+                            >
+                                <path
+                                        d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"
+                                />
+                                <path
+                                        d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"
+                                />
+                            </svg>
+                            Tìm Theo
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Đồ Nam</li>
+                            <li class="list-group-item">Đồ Nữ</li>
+                            <li class="list-group-item">Danh Mục</li>
+                            <li class="list-group-item">Màu Sắc</li>
+                            <li class="list-group-item">Thương Thiệu</li>
+                        </ul>
+                    </div>
+                    <!--Category-->
+                </article>
+                <aside class="col-9 mt-5">
+                    <div class="row">
+                        <div class="col-sm-4 mt-5 thuchover" th:each="item, iterStat : ${productList}">
+                            <div class="card" style="width: 18rem;">
+                                <img th:src="@{'/api/thuc/productDetail/images/' + ${item.thumbnail}}" class="card-img-top" alt="..." style="height: 200px; width: 100%;">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${item.name}">Tên Sản Phẩm</h5>
+                                    <p class="card-text" style="font-weight: bold;" th:text="${item.price}">Giá</p>
+                                    <p></p>
+                                    <a href="#" class="btn btn-dark">Mua</a>
+                                    <a href="#" class="btn btn-dark">Xem Chi Tiết</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <!-- Liên kết trang trước -->
+                            <li class="page-item">
+                                <a class="page-link" th:href="@{'/dssp?page=' + ${currentPage - 1}}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+
+                            <!-- Tạo liên kết cho mỗi trang -->
+                            <th:block th:each="pageNumber : ${#numbers.sequence(0, totalPage - 1)}">
+                                <li class="page-item" th:class="${pageNumber == currentPage ? 'active' : ''}">
+                                    <a class="page-link" th:href="@{'/dssp?page=' + ${pageNumber}}" th:text="${pageNumber + 1}"></a>
+                                </li>
+                            </th:block>
+
+                            <!-- Liên kết trang kế tiếp -->
+                            <li class="page-item">
+                                <a class="page-link" th:href="@{'/dssp?page=' + ${currentPage + 1}}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </aside>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

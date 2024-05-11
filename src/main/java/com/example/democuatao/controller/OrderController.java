@@ -6,12 +6,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,5 +34,12 @@ public class OrderController {
             return ResponseEntity.badRequest().body(e.getMessage());
 
         }
+    }
+        @GetMapping("/findByUserId/{userId}")
+        public String findOrdersByUserId(@PathVariable int userId, Model model) {
+            List<Orders> orders = orderService.findByUserId(userId);
+            model.addAttribute("orders",orders);
+            return "layoutUsers/gioHang";
+
     }
 }

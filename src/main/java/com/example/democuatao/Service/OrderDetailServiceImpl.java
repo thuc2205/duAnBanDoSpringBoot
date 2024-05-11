@@ -26,9 +26,9 @@ public class OrderDetailServiceImpl implements IOrderDetailService{
     @Transactional
     public OrderDetails createOrder(OrderDetailDTO orderDetailDTO) throws DataNotFound {
         Orders order = orderRepo.findById(orderDetailDTO.getOrderId())
-                .orElseThrow(()-> new DataNotFound("khong tim thay voi id : "+orderDetailDTO.getOrderId()));
+                .orElseThrow(()-> new DataNotFound("khong tim thay voi id order: "+orderDetailDTO.getOrderId()));
         ProductDetails product = productDetailRepo.findById(orderDetailDTO.getProductDetailId())
-                .orElseThrow(()-> new DataNotFound("khong tim thay voi id : "+orderDetailDTO.getProductDetailId()));
+                .orElseThrow(()-> new DataNotFound("khong tim thay voi id product: "+orderDetailDTO.getProductDetailId()));
         Optional<OrderDetails> existingOrderDetail = orderdetailRepo.findByOrdersAndProductDetails(order,product);
         if(existingOrderDetail.isPresent() && order.getStatus().equalsIgnoreCase("đang chơ xử lý")){
             OrderDetails orderDetailUpdate = existingOrderDetail.get();
