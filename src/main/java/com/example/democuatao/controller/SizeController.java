@@ -33,11 +33,7 @@ public class SizeController {
         sizeService.createSize(sizeDTO);
         return "redirect:/api/thuc/size/list";
     }
-    @GetMapping( "/list")
-    public String getAllSize(Model model) {
-        model.addAttribute("sizes", sizeService.getAllSize());
-        return "admins/size";
-    }
+
     @PutMapping({"/{id}"})
     public ResponseEntity<?> updateSize(@PathVariable int id, @ModelAttribute SizeDTO sizeDTO){
        Sizes sizes= sizeService.updateSize(id,sizeDTO);

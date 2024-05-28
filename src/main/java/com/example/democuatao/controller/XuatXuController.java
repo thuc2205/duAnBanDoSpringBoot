@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("${api.prefix}/xuatxu")
 @RequiredArgsConstructor
 public class XuatXuController {
@@ -22,21 +22,22 @@ public class XuatXuController {
     private final XuatXuServiceImpl xuatXuService;
 
     @PostMapping("")
-    public String createXuatXu(@ModelAttribute XuatXuDTO xuatXuDTO, BindingResult result){
+    public ResponseEntity<?> createXuatXu(@ModelAttribute XuatXuDTO xuatXuDTO, BindingResult result){
         if(result.hasErrors()){
             List<String> errCreateXuatXu = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
                     .collect(Collectors.toList());
         }
-        xuatXuService.create(xuatXuDTO);
-        return "redirect:/api/thuc/xuatxu";
+        try {
+            XuatXu xuatXu = xuatXuService.create(xuatXuDTO);
+            return ResponseEntity.ok().body(xuatXu);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
-    @GetMapping("")
-    public String getAll(Model model){
-        model.addAttribute("xuatxu",xuatXuService.getAllReal());
-       return "admins/xuatxu";
-    }
+
     @PutMapping({"/{id}"})
     public ResponseEntity<?> update(@PathVariable int id, @RequestBody XuatXuDTO xuatXuDTO){
         XuatXu xuatXu = xuatXuService.update(id,xuatXuDTO);

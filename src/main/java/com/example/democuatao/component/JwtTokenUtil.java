@@ -33,9 +33,11 @@
 
         @Value("${jwt.secretKey}")
         private  String SECRET_KEY;
-        @Value("${jwt.expiration}")
-        private int EXPIRATION_TIME; // 1 month in milliseconds
 
+        @Value("${jwt.expiration}")
+        private int EXPIRATION_TIME;
+
+        @Deprecated
         public String generateToken(User user) throws Exception{
             Date now = new Date();
 //            this.generateSecureKey();
@@ -44,15 +46,15 @@
                 Map<String, Object> claim = new HashMap<>();
                 claim.put("phoneNumber",user.getPhoneNumber());
                 String token = Jwts.builder()
-                        .claims(claim)
-                        .subject(user.getPhoneNumber())
-                        .issuedAt(now)
-                        .expiration(expiration)
-                        .signWith(getSignInKey(),SignatureAlgorithm.HS256)
+                        .setClaims(claim)
+                        .setSubject(user.getUsername())
+                        .setIssuedAt(now)
+                        .setExpiration(expiration)
+                        .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                         .compact();
                 return token;
             }catch (Exception e){
-              throw new InvalidParameterException(e.getMessage());
+                throw new InvalidParameterException(e.getMessage());
             }
 
         }
@@ -62,6 +64,7 @@
             return Keys.hmacShaKeyFor(bytes);
         }
         // Hàm trích xuất tất cả các claim từ token
+        @Deprecated
         private Claims extractAllClaims(String token) {
             try {
                 return Jwts.parser()
@@ -78,7 +81,7 @@
 
         private String generateSecureKey() {
             SecureRandom random = new SecureRandom();
-            byte[] key = new byte[32]; // Create a byte array of the desired key size
+            byte[] key = new byte[32];
             random.nextBytes(key);
             String secretKey = Encoders.BASE64.encode(key);
             return secretKey;
@@ -94,7 +97,5 @@
         public String extractPhoneNumber(String token) {
             return extractClaim(token, Claims::getSubject);
         }
-
-
 
     }

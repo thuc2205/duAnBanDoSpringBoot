@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/order")
 public class OrderController {
@@ -35,11 +35,5 @@ public class OrderController {
 
         }
     }
-        @GetMapping("/findByUserId/{userId}")
-        public String findOrdersByUserId(@PathVariable int userId, Model model) {
-            List<Orders> orders = orderService.findByUserId(userId);
-            model.addAttribute("orders",orders);
-            return "layoutUsers/gioHang";
 
-    }
 }

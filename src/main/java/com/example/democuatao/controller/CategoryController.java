@@ -3,6 +3,7 @@ package com.example.democuatao.controller;
 import com.example.democuatao.Service.CategoryServiceImpl;
 import com.example.democuatao.dtos.CategoriesDto;
 import com.example.democuatao.model.Categories;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,29 +15,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("${api.prefix}/categories")
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryServiceImpl categoryService;
 
     @PostMapping("")
-    public String createCategory(@ModelAttribute CategoriesDto categoriesDto, BindingResult result){
+    public ResponseEntity<?> createCategory(@ModelAttribute @Valid CategoriesDto categoriesDto, BindingResult result){
         if(result.hasErrors()){
             List<String> err = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
                     .collect(Collectors.toList());
         }
-        categoryService.create(categoriesDto);
-        return "redirect:/api/thuc/categories";
-    }
-    @GetMapping("")
-    public String getAllCategories(Model model){
-        model.addAttribute("categories",categoryService.getAllReal());
+        try {
+            categoryService.create(categoriesDto);
+            return ResponseEntity.ok().body("thanh cong tao cate");
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
 
-        return "categories";
     }
+
 
     @PutMapping("/{id}")
         public ResponseEntity<?> updateCategory(@PathVariable int id,@RequestBody CategoriesDto categoriesDto){

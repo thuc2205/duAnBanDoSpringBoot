@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("${api.prefix}/user")
 @RequiredArgsConstructor
 public class UserController {
@@ -29,7 +29,6 @@ public class UserController {
                     .stream()
                     .map(FieldError::getDefaultMessage)
                     .collect(Collectors.toList());
-//            return ResponseEntity.badRequest().body()
         }
        try {
            if(!userDTO.getPassword().equals(userDTO.getRetypePassword())){
@@ -44,6 +43,7 @@ public class UserController {
        }
     }
     @PostMapping("/login")
+    @Deprecated
     public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO){
         try {
             String token = userService.login(userLoginDTO.getPhoneNumber(),userLoginDTO.getPassword());

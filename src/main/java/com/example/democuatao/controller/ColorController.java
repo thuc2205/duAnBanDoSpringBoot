@@ -4,6 +4,7 @@ import com.example.democuatao.Service.ColorServiceImpl;
 import com.example.democuatao.dtos.ColorDTO;
 
 import com.example.democuatao.model.Colors;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,14 +16,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("${api.prefix}/color")
 @RequiredArgsConstructor
 public class ColorController {
 
     private final ColorServiceImpl colorService;
     @PostMapping("")
-    public String createColor(@ModelAttribute ColorDTO colorDTO, BindingResult result){
+    public ResponseEntity<?> createColor(@Valid @RequestBody ColorDTO colorDTO, BindingResult result){
         if(result.hasErrors()){
             List<String> errCreateColor = result.getFieldErrors()
                     .stream()
@@ -30,13 +31,9 @@ public class ColorController {
                     .collect(Collectors.toList());
         }
         colorService.create(colorDTO);
-        return "redirect:/api/thuc/color";
+        return ResponseEntity.ok().body("Thành cong tao mau");
     }
-    @GetMapping("")
-    public String getAll(Model model) {
-       model.addAttribute("colors",colorService.getAllReal());
-        return "admins/colors";
-    }
+
 
 
 

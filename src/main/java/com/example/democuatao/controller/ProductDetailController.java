@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("${api.prefix}/productDetail")
 @RequiredArgsConstructor
 public class ProductDetailController {
@@ -47,38 +47,10 @@ public class ProductDetailController {
     private final ColorServiceImpl colorService;
     private final ProductDetailRepo productDetailRepo;
 
-    @GetMapping("/list")
-    public String getAll(
-            @RequestParam(defaultValue = "0",name = "category_id")int categoryId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int limit
-            , Model model
-            ){
-        PageRequest pageRequest;
-        if(categoryId==0){
-            pageRequest = PageRequest.of(page,limit);
-        }else{
-            pageRequest= PageRequest.of(page,limit, Sort.by("id").ascending());
-        }
-        Page<ProductResponse> productPage = productDetaiServiceimpl.getAllProduct(pageRequest);
-        int totalPage= productPage.getTotalPages();
-        List<ProductResponse> list = productPage.getContent();
-        model.addAttribute("productList", list);
-        model.addAttribute("totalPage", totalPage);
-        model.addAttribute("currentPage", page);
-        return "admins/products";
-    }
 
 
-    @GetMapping("")
-    public String displayAddProduct(Model model){
-        model.addAttribute("categories", categoryService.getAllReal());
-        model.addAttribute("brands", brandService.getAllReal());
-        model.addAttribute("xuatxu", xuatXuService.getAllReal());
-        model.addAttribute("sizes", sizeService.getAllSize());
-        model.addAttribute("colors", colorService.getAllReal());
-        return "admins/addProduct";
-    }
+
+
 
 //    @GetMapping("{id}")
 //    public ResponseEntity<?>getOne(@PathVariable int id ,Model model){

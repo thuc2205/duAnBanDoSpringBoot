@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("${api.prefix}/brand")
 @RequiredArgsConstructor
 public class BrandController {
@@ -22,21 +22,24 @@ public class BrandController {
     private final BrandServiceImpl brandService;
 
     @PostMapping("")
-    public String createBrand(@ModelAttribute BrandDTO brandDTO, BindingResult result){
+    public ResponseEntity<?> createBrand(@ModelAttribute BrandDTO brandDTO, BindingResult result){
+
         if(result.hasErrors()){
             List<String> err = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
                     .collect(Collectors.toList());
         }
-        brandService.create(brandDTO);
-        return "redirect:/api/thuc/brand";
+        try {
+            brandService.create(brandDTO);
+            return ResponseEntity.ok().body("tao brand thanh cong");
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        }
+
     }
-    @GetMapping("")
-    public String getAllBrand(Model model){
-        model.addAttribute("brands", brandService.getAllReal());
-        return "admins/brands";
-    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBrand(@PathVariable int id,@RequestBody BrandDTO brandDTO){
         Brand brand = brandService.update(id,brandDTO);
