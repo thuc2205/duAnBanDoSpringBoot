@@ -32,7 +32,6 @@ public class OrderController {
         return ResponseEntity.ok(orders);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
-
         }
     }
 

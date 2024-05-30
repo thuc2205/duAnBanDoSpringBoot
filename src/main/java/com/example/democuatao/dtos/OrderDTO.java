@@ -15,6 +15,7 @@ import java.util.List;
 @Setter
 @Builder
 public class OrderDTO {
+
     @JsonProperty("user_id")
     private int userId;
 
@@ -23,14 +24,14 @@ public class OrderDTO {
 
     @JsonProperty("email")
     private String email;
+
     @JsonProperty("phone_number")
     private String phoneNumber;
 
     private String note;
 
     private String status;
-    @Min(value = 0,message = "tong tien >0")
-    @JsonProperty("total_money")
+
     private Float totalMoney;
 
     @JsonProperty("shipping_method")

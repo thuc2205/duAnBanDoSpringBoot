@@ -88,19 +88,20 @@
                 </ul>
                 <div class="text-end">
                     <div class="nav-navbar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-fill" viewBox="0 0 16 16">
-                            <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
-                        </svg>
+                        <a id="cartDetail"  th:href="@{'/api/thuc/us/cart'}">
+                            Giỏ Hàng <span class="badge badge-pill badge-info">0</span>
+                        </a>
+
                         <span id="phoneNumber" style="font-family: 'Yu Gothic Medium'; font-weight: bold"></span>
 
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                                <a id="loginOrLogout" href="#!login" class="offset-lg-1 ">
+                            <a id="loginOrLogout" href="#!login" class="offset-lg-1">
                                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                                 <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-                                </a>
-                            </svg>
-
+                            </a>
+                        </svg>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -157,15 +158,28 @@
         </footer>
     </div>
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var phoneNumber = document.cookie.replace(/(?:(?:^|.*;\s*)phoneNumber\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hàm để lấy giá trị cookie
+        function getCookie(name) {
+            let cookieArr = document.cookie.split(";");
+            for (let i = 0; i < cookieArr.length; i++) {
+                let cookiePair = cookieArr[i].split("=");
+                if (name === cookiePair[0].trim()) {
+                    return decodeURIComponent(cookiePair[1]);
+                }
+            }
+            return null;
+        }
+
+
+        // Cập nhật thông tin người dùng dựa trên cookie
+        var phoneNumber = getCookie("phoneNumber");
         if (phoneNumber) {
             var phoneNumberSpan = document.getElementById("phoneNumber");
             if (phoneNumberSpan) {
-                phoneNumberSpan.innerText =  phoneNumber;
+                phoneNumberSpan.innerText = phoneNumber;
                 document.getElementById("loginOrLogout").innerText = "Đăng Xuất";
-
             }
         } else {
             document.getElementById("loginOrLogout").innerText = "Đăng Nhập";
@@ -176,32 +190,55 @@
                 loginOrLogoutButton.href = "/api/thuc/layout/login";
             }
         }
-    });
 
-    // Sự kiện click cho nút "Đăng xuất"
-    document.getElementById("loginOrLogout").addEventListener("click", function(event) {
-        event.preventDefault(); // Ngăn chặn hành động mặc định của nút
+        // Sự kiện click cho nút "Đăng Xuất" hoặc "Đăng Nhập"
+        document.getElementById("loginOrLogout").addEventListener("click", function(event) {
+            event.preventDefault(); // Ngăn chặn hành động mặc định của nút
 
-        // Kiểm tra nếu người dùng đã đăng nhập
-        var phoneNumber = document.cookie.replace(/(?:(?:^|.*;\s*)phoneNumber\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-        if (phoneNumber) {
-            // Hiển thị hộp thoại xác nhận đăng xuất
-            var logoutConfirmation = confirm("Bạn có muốn đăng xuất?");
-            if (logoutConfirmation) {
-                // Nếu người dùng chọn đăng xuất, chuyển hướng đến URL đăng xuất
-                window.location.href = "/api/thuc/us/logout";
+            // Kiểm tra nếu người dùng đã đăng nhập
+            var phoneNumber = getCookie("phoneNumber");
+            if (phoneNumber) {
+                // Hiển thị hộp thoại xác nhận đăng xuất
+                var logoutConfirmation = confirm("Bạn có muốn đăng xuất?");
+                if (logoutConfirmation) {
+                    // Nếu người dùng chọn đăng xuất, chuyển hướng đến URL đăng xuất
+                    window.location.href = "/api/thuc/us/logout";
+                }
+            } else {
+                var loginConfirmation = confirm("Bạn có muốn đăng nhập không?");
+                if (loginConfirmation) {
+                    // Nếu người dùng chọn đăng nhập, chuyển hướng đến URL đăng nhập
+                    window.location.href = "/api/thuc/layout/login";
+                }
             }
-        } else {
+        });
 
-            var logoutConfirmation = confirm("Bạn có muốn đăng nhập không?");
-            if (logoutConfirmation) {
-                // Nếu người dùng chọn đăng xuất, chuyển hướng đến URL đăng xuất
-                window.location.href = "/api/thuc/layout/login";
+        document.getElementById("cartDetail").addEventListener("click", function(event) {
+            event.preventDefault();
+
+            var userId = getCookie("userId");
+            if (userId==null) {
+
+                    window.location.href = "/api/thuc/us/cart";
+
+            } else {
+                    window.location.href = "/api/thuc/us/findByUserId/" + userId;
             }
-        }
-    });
+        });
+        document.getElementById("checkOut").addEventListener("click", function(event) {
+            event.preventDefault();
 
+            var userId = getCookie("userId");
+            if (userId==null) {
+                    window.location.href = "/api/thuc/us/cartCheckOut";
+
+            } else {
+                    window.location.href = "/api/thuc/us/findByUserIdCheckOut/" + userId;
+            }
+        });
+    });
 </script>
+
 
 
 </body>

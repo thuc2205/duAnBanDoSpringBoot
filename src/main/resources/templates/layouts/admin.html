@@ -269,8 +269,61 @@
 
 </script>
 <!--cua color-->
-<script  src="../adminJs/color.js">
+<script>
+        document.getElementById('colorForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
 
+        if (!confirm("Bạn có chắc muốn thêm sản phẩm này?")) {
+        return;
+    }
+
+        const name = document.getElementById('name').value;
+        const token = getCookie('token');
+
+        console.log('Token:', token); // Log token để kiểm tra
+
+        if (!token) {
+        alert('Không tìm thấy token');
+        return;
+    }
+
+        try {
+        const response = await fetch(`/api/thuc/color`, {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    },
+        body: JSON.stringify({ name: name })
+    });
+
+        console.log('Response status:', response.status); // Log trạng thái phản hồi
+
+        if (response.ok) {
+        alert('Thành công tạo màu');
+        window.location.reload();
+    } else {
+        const errorData = await response.json();
+        alert('Thất bại khi tạo màu: ' + errorData.message);
+    }
+    } catch (error) {
+        console.error('Lỗi:', error);
+        alert('Đã xảy ra lỗi khi cố gắng tạo màu.');
+    }
+    });
+
+
+
+        function getCookie(name) {
+        let cookieArr = document.cookie.split(";");
+        for (let i = 0; i < cookieArr.length; i++) {
+        let cookiePair = cookieArr[i].split("=");
+        if (name === cookiePair[0].trim()) {
+        return decodeURIComponent(cookiePair[1]);
+    }
+    }
+        return null;
+    }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>

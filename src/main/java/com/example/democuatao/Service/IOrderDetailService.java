@@ -5,11 +5,12 @@ import com.example.democuatao.model.OrderDetails;
 
 
 import com.shopcuatao.bangiay.exeption.DataNotFound;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 
 public interface IOrderDetailService {
-    OrderDetails createOrder(OrderDetailDTO orderDetailDTO) throws DataNotFound;
+    public OrderDetails createOrder(OrderDetailDTO orderDetailDTO, HttpServletRequest request) throws DataNotFound  ;
     OrderDetails getOrderById(int id);
 
 //    List<OrderDetails> findByUserId(int userId);

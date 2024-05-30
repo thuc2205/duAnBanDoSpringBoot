@@ -79,16 +79,15 @@
     <div class="container">
         <h1>Giỏ Hàng</h1>
         <div class="row">
-            <div class="col-xl-8" th:each="order : ${orders}">
+            <!-- Hiển thị orders từ cơ sở dữ liệu -->
+            <div class="col-xl-8" th:if="${orders != null}" th:each="order : ${orders}">
                 <div class="card border shadow-none" th:each="orderDetail : ${order.orderDetails}">
                     <div class="card-body">
                         <div class="d-flex align-items-start border-bottom pb-3">
                             <div class="me-4">
-                                <img
-                                        th:src="@{'/api/thuc/productDetail/images/' + ${orderDetail.productDetails.thumbnail}}"
-                                        alt=""
-                                        class="avatar-lg rounded"
-                                />
+                                <img th:src="@{'/api/thuc/productDetail/images/' + ${orderDetail.productDetails.thumbnail}}"
+                                     alt=""
+                                     class="avatar-lg rounded"/>
                             </div>
                             <div class="flex-grow-1 align-self-center overflow-hidden">
                                 <div>
@@ -103,15 +102,15 @@
                                         <i class="bx bxs-star-half text-warning"></i>
                                     </p>
                                     <p class="mb-0 mt-1">
-                                        Color : <span class="fw-medium"
-                                                      th:text="${orderDetail.productDetails.colors.name}"></span>
+                                        Color: <span class="fw-medium" th:text="${orderDetail.productDetails.colors.name}"></span>
                                     </p>
                                 </div>
                             </div>
                             <div class="flex-shrink-0 ms-2">
                                 <ul class="list-inline mb-0 font-size-16">
                                     <li class="list-inline-item">
-                                        <a href="#" class="text-muted px-1">
+                                        <a th:href="@{'/api/thuc/orderdetail/delete/'+ ${orderDetail.id}}" class="text-muted px-1">
+                                            Xóa
                                             <i class="mdi mdi-trash-can-outline"></i>
                                         </a>
                                     </li>
@@ -130,9 +129,7 @@
                                     <div class="mt-3">
                                         <p class="text-muted mb-2">Price</p>
                                         <h5 class="mb-0 mt-2">
-                        <span class="text-muted me-2"th:text="${orderDetail.productDetails.price}"
-                        ><del class="font-size-16 fw-normal">$500</del></span
-                        >$450
+                                            <span class="text-muted me-2" th:text="${orderDetail.productDetails.price}"><del class="font-size-16 fw-normal">$500</del></span>
                                         </h5>
                                     </div>
                                 </div>
@@ -140,7 +137,11 @@
                                     <div class="mt-3">
                                         <p class="text-muted mb-2">Quantity</p>
                                         <div class="d-inline-flex">
-                                            <input class="form-control" th:value="${orderDetail.quantifyProduct}" >
+                                            <form th:action="@{'/api/thuc/us/updateSoLuong'}" method="POST">
+                                                <input class="form-control" th:value="${orderDetail.quantifyProduct}" name="numberOfProduct">
+                                                <input hidden th:value="${orderDetail.id}" name="id">
+                                                <button class="btn btn-danger">Sửa SL</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -154,9 +155,7 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- end card -->
-
                 <div class="row my-4">
                     <div class="col-sm-6">
                         <a href="ecommerce-products.html" class="btn btn-link text-muted">
@@ -176,45 +175,112 @@
                 <!-- end row-->
             </div>
 
+            <!-- Hiển thị orderDetails từ session -->
+            <div class="col-xl-8" >
+                <div class="card border shadow-none"th:if="${orderDetails != null}" th:each="orderDetail : ${orderDetails}">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start border-bottom pb-3">
+                            <div class="me-4">
+                                <img th:src="@{'/api/thuc/productDetail/images/' + ${orderDetail.productDetails.thumbnail}}"
+                                     alt=""
+                                     class="avatar-lg rounded"/>
+                            </div>
+                            <div class="flex-grow-1 align-self-center overflow-hidden">
+                                <div>
+                                    <h5 class="text-truncate font-size-18">
+                                        <a href="#" class="text-dark" th:text="${orderDetail.productDetails.name}"></a>
+                                    </h5>
+                                    <p class="text-muted mb-0">
+                                        <i class="bx bxs-star text-warning"></i>
+                                        <i class="bx bxs-star text-warning"></i>
+                                        <i class="bx bxs-star text-warning"></i>
+                                        <i class="bx bxs-star text-warning"></i>
+                                        <i class="bx bxs-star-half text-warning"></i>
+                                    </p>
+                                    <p class="mb-0 mt-1">
+                                        Color: <span class="fw-medium" th:text="${orderDetail.productDetails.colors.name}"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 ms-2">
+                                <ul class="list-inline mb-0 font-size-16">
+                                    <li class="list-inline-item">
+                                        <a th:href="@{'/api/thuc/orderdetail/delete/'+ ${orderDetail.id}}" class="text-muted px-1">
+                                            Xóa
+                                            <i class="mdi mdi-trash-can-outline"></i>
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a href="#" class="text-muted px-1">
+                                            <i class="mdi mdi-heart-outline"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mt-3">
+                                        <p class="text-muted mb-2">Price</p>
+                                        <h5 class="mb-0 mt-2">
+                                            <span class="text-muted me-2" th:text="${orderDetail.productDetails.price}"><del class="font-size-16 fw-normal">$500</del></span>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="mt-3">
+                                        <p class="text-muted mb-2">Quantity</p>
+                                        <div class="d-inline-flex">
+                                            <form th:action="@{'/api/thuc/us/updateSoLuong'}" method="POST">
+                                                <input class="form-control" th:value="${orderDetail.quantifyProduct}" name="numberOfProduct">
+                                                <input hidden th:value="${orderDetail.id}" name="id">
+                                                <button class="btn btn-danger">Sửa SL</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mt-3">
+                                        <p class="text-muted mb-2">Total</p>
+                                        <h5 th:text="${orderDetail.productDetails.price * orderDetail.quantifyProduct}">vnd</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end card -->
+
+            </div>
+            <div class="row my-4">
+                <div class="col-sm-6">
+                    <a href="ecommerce-products.html" class="btn btn-link text-muted">
+                        <i class="mdi mdi-arrow-left me-1"></i> Continue Shopping
+                    </a>
+                </div>
+                <!-- end col -->
+                <div class="col-sm-6">
+                    <div class="text-sm-end mt-2 mt-sm-0">
+                        <a href="#!checkOut" class="btn btn-success" id="checkOut">
+                            <i class="mdi mdi-cart-outline me-1"></i> Checkout
+                        </a>
+                    </div>
+                </div>
+                <!-- end col -->
+            </div>
+            <!-- end row-->
+
             <div class="col-xl-4">
                 <div class="mt-5 mt-lg-0">
                     <div class="card border shadow-none">
                         <div class="card-header bg-transparent border-bottom py-3 px-4">
                             <h5 class="font-size-16 mb-0">
-                                Order Summary <span class="float-end">#MN0124</span>
+                                Hãy Mua Hàng ĐI :))) <span class="float-end">SẼ VUI LẮM ĐẪY</span>
                             </h5>
                         </div>
-                        <div class="card-body p-4 pt-2">
-                            <div class="table-responsive">
-                                <table class="table mb-0">
-                                    <tbody>
-                                    <tr>
-                                        <td>Sub Total :</td>
-                                        <td class="text-end">$ 780</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Discount :</td>
-                                        <td class="text-end">- $ 78</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Shipping Charge :</td>
-                                        <td class="text-end">$ 25</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Estimated Tax :</td>
-                                        <td class="text-end">$ 18.20</td>
-                                    </tr>
-                                    <tr class="bg-light">
-                                        <th>Total :</th>
-                                        <td class="text-end">
-                                            <span class="fw-bold"> $ 745.2 </span>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- end table-responsive -->
-                        </div>
+
                     </div>
                 </div>
             </div>
