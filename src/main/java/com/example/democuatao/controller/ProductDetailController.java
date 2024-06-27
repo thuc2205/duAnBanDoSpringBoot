@@ -70,6 +70,7 @@ public class ProductDetailController {
         productDetaiServiceimpl.create(productDetailDTO);
         return "redirect:/api/thuc/productDetail/list";
     }
+
     @PostMapping(value = "/uploads/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadFile(@ModelAttribute("files")List<MultipartFile> files,
     @PathVariable("id") int productDetailId) throws IllegalAccessException, IOException {

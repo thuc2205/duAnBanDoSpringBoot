@@ -9,9 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class CartItemDTO {
-    @JsonProperty("product_id")
     private int productId;
 
-    @JsonProperty("quantify")
     private int quantify;
 }

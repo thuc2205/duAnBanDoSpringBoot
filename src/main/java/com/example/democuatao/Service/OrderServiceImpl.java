@@ -14,7 +14,10 @@ import com.example.democuatao.repositories.UserRepo;
 import com.shopcuatao.bangiay.exeption.DataNotFound;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,14 +35,11 @@ public class OrderServiceImpl implements IOrderService{
 
     @Override
     @Transactional
-    public Orders createOrder(OrderDTO orderDTO) throws Exception {
-        User user = userRepo.findById(orderDTO.getUserId())
-                .orElseThrow(() -> new DataNotFound("Khong tim thay id user : " +orderDTO.getUserId()));
-        Date shippingDate = orderDTO.getShippingDate() == null ? new Date() : orderDTO.getShippingDate();
-        Date today = new Date();
-        if(shippingDate.before(today)){
-            throw new IllegalAccessException("khong duoc be hon ngay hnay");
-        }
+    public Orders createOrder(@ModelAttribute OrderDTO orderDTO) throws Exception {
+//        User user = userRepo.findById(orderDTO.getUserId())
+//                .orElse(null);
+//        Date shippingDate = orderDTO.getShippingDate() == null ? new Date() : orderDTO.getShippingDate();
+//
         Orders newOrders = Orders.builder()
                 .email(orderDTO.getEmail())
                 .fullName(orderDTO.getFullName())
@@ -49,10 +49,10 @@ public class OrderServiceImpl implements IOrderService{
                 .phoneNumber(orderDTO.getPhoneNumber())
                 .totalMoney(orderDTO.getTotalMoney())
                 .shippingAddres(orderDTO.getShippingAdress())
-                .status("đang chơ xử lý")
+                .status("chờ xác nhận")
                 .orderDate(new Date())
                 .active(true)
-                .user(user)
+//                .user(user)
                 .build();
         orderRepo.save(newOrders);
         List<OrderDetails> orderDetailsList = new ArrayList<>();
@@ -74,6 +74,13 @@ public class OrderServiceImpl implements IOrderService{
 
         return newOrders;
     }
+    @Transactional
+    public Orders updateOrderStatus(int id) throws DataNotFound {
+        Orders existingOrder = orderRepo.findById(id)
+                .orElseThrow(() -> new DataNotFound("Khong tim thay id order " + id));
+        existingOrder.setStatus("Đang Chuẩn Bị");
+        return existingOrder;
+    }
 
     @Override
     public Orders getOrderById(int id) {
@@ -81,13 +88,40 @@ public class OrderServiceImpl implements IOrderService{
     }
 
     @Override
-    public List<Orders> findByUserId(int userId) {
-        return orderRepo.findByUserId(userId);
+    public List<Orders> findByUserId(String phoneNumber) {
+        return orderRepo.findOrdersByUserPhoneNumberAndStatus(phoneNumber);
+    }
+    public Page<Orders> findByStatus(Pageable pageable) {
+        return orderRepo.findOrdersByStatus(pageable);
     }
 
     @Override
-    public Orders updateOrder(int id, OrderDTO orderDTO) {
-        return null;
+    @Transactional
+    public Orders updateOrder(int id, OrderDTO orderDTO) throws DataNotFound {
+        Orders existingOrder = orderRepo.findById(id)
+                .orElseThrow(() -> new DataNotFound("Khong tim thay id order " + id));
+
+        existingOrder.setEmail(orderDTO.getEmail());
+        existingOrder.setFullName(orderDTO.getFullName());
+        existingOrder.setNote(orderDTO.getNote());
+        existingOrder.setPaymentMethod(orderDTO.getPayMentmethod());
+        existingOrder.setShippingMethod(orderDTO.getShippingMethod());
+        existingOrder.setPhoneNumber(orderDTO.getPhoneNumber());
+        existingOrder.setTotalMoney(orderDTO.getTotalMoney());
+        existingOrder.setShippingAddres(orderDTO.getShippingAdress());
+        existingOrder.setStatus("chờ xác nhận");
+        existingOrder.setOrderDate(orderDTO.getOrderDate() != null ? orderDTO.getOrderDate() : existingOrder.getOrderDate());
+        existingOrder.setActive(true);
+        return existingOrder;
+    }    @Transactional
+    public Orders updateOrderStatus(int id, String newStatus) throws DataNotFound {
+        Orders existingOrder = orderRepo.findById(id)
+                .orElseThrow(() -> new DataNotFound("Không tìm thấy đơn hàng với ID " + id));
+
+        // Set new status
+        existingOrder.setStatus(newStatus);
+
+        return orderRepo.save(existingOrder);
     }
 
     @Override

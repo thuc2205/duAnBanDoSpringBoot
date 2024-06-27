@@ -4,6 +4,7 @@ import com.example.democuatao.Service.OrderDetailServiceImpl;
 import com.example.democuatao.Service.OrderServiceImpl;
 import com.example.democuatao.Service.ProductDetaiServiceimpl;
 import com.example.democuatao.Service.UserServiceImpl;
+import com.example.democuatao.dtos.OrderDTO;
 import com.example.democuatao.dtos.OrderDetailDTO;
 import com.example.democuatao.model.OrderDetails;
 import com.example.democuatao.model.Orders;
@@ -65,7 +66,6 @@ public class HomeController {
             Model model,
             HttpServletRequest request
     ) {
-        // Get userId from cookies
         Integer userId = getUserIdFromCookies(request.getCookies());
 
         PageRequest pageRequest;
@@ -82,7 +82,10 @@ public class HomeController {
         model.addAttribute("currentPage", page);
 
         if (userId != null) {
-            model.addAttribute("orderId", orderRepo.findByUser_Id(userId));
+            Integer order = orderRepo.findOrderIdWhereUserIdAndStatus(userId);
+            if (order != null) {
+                model.addAttribute("orderId", order);
+            }
         }
 
         return "layoutUsers/dssp";
@@ -124,7 +127,7 @@ public class HomeController {
                     response.addCookie(cookie);
                 }
             }
-
+            System.out.println(token);
 
             Cookie tokenCookie = new Cookie("token", token);
             tokenCookie.setPath("/");
@@ -181,18 +184,21 @@ public class HomeController {
         return "redirect:/api/thuc/us/home";
     }
 
-    @GetMapping("/findByUserId/{userId}")
-    public String findOrdersByUserId(@PathVariable int userId, Model model) {
-        List<Orders> orders = orderService.findByUserId(userId);
+    @GetMapping("/findByUserId/{phoneNumber}")
+    public String findOrdersByUserId(@PathVariable("phoneNumber") String phoneNumber, Model model) {
+        List<Orders> orders = orderService.findByUserId(phoneNumber);
         model.addAttribute("orders", orders);
         return "layoutUsers/gioHang";
 
     }
 
-    @GetMapping("/findByUserIdCheckOut/{userId}")
-    public String findOrdersByUserIdCheckOut(@PathVariable int userId, Model model) {
-        List<Orders> orders = orderService.findByUserId(userId);
+    @GetMapping("/findByUserIdCheckOut/{phoneNumber}")
+    public String findOrdersByUserIdCheckOut(@PathVariable String phoneNumber, Model model ,HttpServletRequest request) {
+        List<Orders> orders = orderService.findByUserId(phoneNumber);
+        Integer userIds = getUserIdFromCookies(request.getCookies());
         model.addAttribute("orders", orders);
+        model.addAttribute("userId", userIds);
+        model.addAttribute("orderDTO", new OrderDTO());
         return "layoutUsers/muaHang";
 
     }
@@ -211,6 +217,7 @@ public class HomeController {
             return "layoutUsers/gioHang";
         } else {
             model.addAttribute("orderDetails", orderDetails);
+
             return "layoutUsers/gioHang";
         }
     }
@@ -220,12 +227,15 @@ public class HomeController {
         List<OrderDetails> orderDetails = (List<OrderDetails>) session.getAttribute("orderDetails");
 
         if (orderDetails == null || orderDetails.isEmpty()) {
-            return "layoutUsers/muaHang";
+            model.addAttribute("orderDTO", new OrderDTO());
         } else {
             model.addAttribute("orderDetails", orderDetails);
-            return "layoutUsers/muaHang";
+            model.addAttribute("orderDTO", new OrderDTO());
         }
+
+        return "layoutUsers/muaHang";
     }
+
 
     @GetMapping("/orderComfirm")
     public String displayOrderComfirm() {

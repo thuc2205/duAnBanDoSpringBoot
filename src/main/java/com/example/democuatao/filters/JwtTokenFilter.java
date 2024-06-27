@@ -89,6 +89,7 @@ public class JwtTokenFilter extends OncePerRequestFilter{
         byPassTokens.add(Map.of("api/thuc/us/login/go", "POST"));
         byPassTokens.add(Map.of("api/thuc/us/logout", "GET"));
         byPassTokens.add(Map.of("api/thuc/layout/xuatxu", "GET"));
+        byPassTokens.add(Map.of("api/thuc/layout/donhang", "GET"));
         byPassTokens.add(Map.of("api/thuc/layout/brand", "GET"));
         byPassTokens.add(Map.of("api/thuc/us/orderComfirm", "GET"));
         byPassTokens.add(Map.of("api/thuc/us/findByUserId", "GET"));
@@ -97,8 +98,12 @@ public class JwtTokenFilter extends OncePerRequestFilter{
         byPassTokens.add(Map.of("api/thuc/us/cartCheckOut", "GET"));
         byPassTokens.add(Map.of("api/thuc/us/updateSoLuong", "POST"));
         byPassTokens.add(Map.of("api/thuc/categories", "GET"));
-        byPassTokens.add(Map.of("api/thuc/order/findByUserId", "GET"));
+        byPassTokens.add(Map.of("api/thuc/layout/getSoLuong", "GET"));
+        byPassTokens.add(Map.of("api/thuc/layout/findOrder", "GET"));
+        byPassTokens.add(Map.of("api/thuc/order/add", "POST"));
+        byPassTokens.add(Map.of("api/thuc/order/update", "PUT"));
         byPassTokens.add(Map.of("api/thuc/orderdetail", "POST"));
+        byPassTokens.add(Map.of("api/thuc/orderdetail", "PUT"));
         byPassTokens.add(Map.of("api/thuc/productDetail/uploads", "POST"));
 
         for (Map<String, String> token : byPassTokens) {

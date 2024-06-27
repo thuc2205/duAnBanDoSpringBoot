@@ -5,6 +5,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .card {
+            width: 18rem;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.1); /* Phóng to 110% khi hover */
+        }
+
+        .card img {
+            height: 200px;
+            width: 100%;
+            object-fit: cover; /* Đảm bảo hình ảnh không bị vỡ */
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content">
@@ -135,7 +151,7 @@
                                         <!-- Sử dụng một phần tử input hidden để gửi giá trị price -->
                                         <input type="hidden" th:name="price" th:value="${item.price}" />
 
-                                        <input type="hidden" th:id="orderId" th:name="orderId" th:value="${orderId.id}" th:if="${orderId != null}"/>
+                                        <input type="hidden" th:id="orderId" th:name="orderId" th:value="${orderId != mull ? orderId : null}" th:if="${orderId != null}"/>
                                         <!-- Sử dụng một phần tử input hidden để gửi giá trị productDetailId -->
                                         <input type="hidden" th:name="productDetailId" th:value="${item.id}" />
                                         <!-- Số lượng sản phẩm mặc định là 1 -->

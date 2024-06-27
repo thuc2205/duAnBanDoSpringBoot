@@ -9,11 +9,14 @@ import com.example.democuatao.Service.ProductDetaiServiceimpl;
 import com.example.democuatao.Service.SizeServiceImpl;
 import com.example.democuatao.Service.XuatXuServiceImpl;
 import com.example.democuatao.model.Orders;
+import com.example.democuatao.repositories.OrderRepo;
 import com.example.democuatao.responese.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("${api.prefix}/layout")
@@ -32,6 +36,7 @@ public class HomeAdmin {
     private final BrandServiceImpl brandService;
     private final ColorServiceImpl colorService;
     private final OrderServiceImpl orderService;
+    private final OrderRepo orderRepo;
     private final SizeServiceImpl sizeService;
     private final XuatXuServiceImpl xuatXuService;
 
@@ -50,17 +55,32 @@ public class HomeAdmin {
         return "admins/colors";
     }
     @GetMapping("brand")
-    public String getAllBrand(Model model){
+    public String getAllBrand(Model model
+
+    ){
+
         model.addAttribute("brands", brandService.getAllReal());
         return "admins/brands";
     }
-    @GetMapping("/findByUserId/{userId}")
-    public String findOrdersByUserId(@PathVariable int userId, Model model) {
-        List<Orders> orders = orderService.findByUserId(userId);
-        model.addAttribute("orders",orders);
-        return "layoutUsers/gioHang";
-
+    @GetMapping("donhang")
+    public String xacNhanDonHang(Model model,
+                                 @RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "10") int limit
+                                 ){
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<Orders> ordersPage = orderService.findByStatus(pageable);
+        model.addAttribute("orders", ordersPage.getContent()); // Lấy danh sách đơn hàng từ Page
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", ordersPage.getTotalPages());
+        return "admins/xacNhan4DonHang";
     }
+//    @GetMapping("getSoLuong/{idOrder}")
+//    public Integer getSoLuong(@PathVariable("idOrder")Integer id){
+//        return orderRepo.countByOrderDetails(id);
+//    }
+
+
+
     @GetMapping( "/size")
     public String getAllSize(Model model) {
         model.addAttribute("sizes", sizeService.getAllSize());
@@ -75,7 +95,7 @@ public class HomeAdmin {
     public String getAll(
             @RequestParam(defaultValue = "0",name = "category_id")int categoryId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int limit
+            @RequestParam(defaultValue = "10") int limit
             , Model model
     ){
         PageRequest pageRequest;
@@ -106,6 +126,13 @@ public class HomeAdmin {
         model.addAttribute("categories",categoryService.getAllReal());
 
         return "categories";
+    }
+
+    @GetMapping("/findOrder/{id}")
+    public String findByOrder(Model model,@PathVariable Integer id){
+        Optional<Orders> orders = orderRepo.findById(id);
+        model.addAttribute("orders",orders.get());
+        return "admins/chiTietXacNhanDonHang";
     }
 
 }

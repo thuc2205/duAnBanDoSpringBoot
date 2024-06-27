@@ -47,7 +47,7 @@ public class Orders {
     @Column(name = "shipping_method")
     private String shippingMethod;
 
-    @Column(name = "shippingAddress")
+    @Column(name = "shipping_address")
     private String shippingAddres;
 
     @Column(name = "shipping_date")

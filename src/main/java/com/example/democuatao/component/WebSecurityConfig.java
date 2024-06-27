@@ -40,9 +40,14 @@ public class WebSecurityConfig {
                                     .requestMatchers(HttpMethod.POST,String.format("%s/us/**",api)).permitAll()
 
                                     .requestMatchers(HttpMethod.POST,String.format("%s/orderdetail/**",api)).permitAll()
+                                    .requestMatchers(HttpMethod.PUT,String.format("%s/orderdetail/**",api)).permitAll()
 
                                     .requestMatchers(HttpMethod.GET,String.format("%s/layout/**",api)).permitAll()
+
                                     .requestMatchers(HttpMethod.GET,String.format("%s/order/**",api)).permitAll()
+                                    .requestMatchers(HttpMethod.POST,String.format("%s/order/**",api)).permitAll()
+                                    .requestMatchers(HttpMethod.PUT,String.format("%s/order/**",api)).permitAll()
+
                                     .requestMatchers(HttpMethod.GET,String.format("%s/size/**",api)).permitAll()
                                     .requestMatchers(HttpMethod.POST,String.format("%s/size/**",api)).hasRole("ADMIN")
                                     .requestMatchers(HttpMethod.GET,String.format("%s/xuatxu/**",api)).permitAll()

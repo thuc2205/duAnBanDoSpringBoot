@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .animated-button {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 16px 36px;
+            border: 4px solid;
+            border-color: transparent;
+            font-size: 16px;
+            background-color: inherit;
+            border-radius: 100px;
+            font-weight: 600;
+            color: greenyellow;
+            box-shadow: 0 0 0 2px greenyellow;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .animated-button svg {
+            position: absolute;
+            width: 24px;
+            fill: greenyellow;
+            z-index: 9;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .animated-button .arr-1 {
+            right: 16px;
+        }
+
+        .animated-button .arr-2 {
+            left: -25%;
+        }
+
+        .animated-button .circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background-color: greenyellow;
+            border-radius: 50%;
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .animated-button .text {
+            position: relative;
+            z-index: 1;
+            transform: translateX(-12px);
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .animated-button:hover {
+            box-shadow: 0 0 0 12px transparent;
+            color: #212121;
+            border-radius: 12px;
+        }
+
+        .animated-button:hover .arr-1 {
+            right: -25%;
+        }
+
+        .animated-button:hover .arr-2 {
+            left: 16px;
+        }
+
+        .animated-button:hover .text {
+            transform: translateX(12px);
+        }
+
+        .animated-button:hover svg {
+            fill: #212121;
+        }
+
+        .animated-button:active {
+            scale: 0.95;
+            box-shadow: 0 0 0 4px greenyellow;
+        }
+
+        .animated-button:hover .circle {
+            width: 220px;
+            height: 220px;
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body layout:fragment="content">
+<div class="container">
+    <h2>Quản lý đơn hàng</h2>
+
+    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+    <label class="form-check-label  text-bg-dark" for="exampleRadios2">
+        Chờ Xác nhận
+    </label>
+
+
+    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+    <label class="form-check-label  text-bg-dark" for="exampleRadios2">
+        Giao Hàng
+    </label>
+
+    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+    <label class="form-check-label  text-bg-dark" for="exampleRadios2">
+        Thành CÔng
+    </label>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>Số Điện Thoại</th>
+            <th>Tên</th>
+            <th>Tổng Sp</th>
+            <th>Tổng Tiền</th>
+            <th>ngày tạo</th>
+            <th>trạng thai</th>
+            <th>hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item, iterStat : ${orders}">
+            <td th:text="${iterStat.count}"></td>
+            <td th:text="${item.phoneNumber}"></td>
+            <td th:text="${item.fullName}"></td>
+            <td><a th:text="${item.id}">Link Text</a></td>
+            <td th:text="${item.totalMoney}"></td>
+            <td th:text="${item.orderDate}"></td>
+            <td><span class="btn btn-success" th:text="${item.status}"></span></td>
+            <td>
+                <button onclick="updateOrderStatus(${item.id});">Xác Nhận</button>
+
+
+                <span class="text"><a style="text-decoration: none"
+                                      th:href="@{'/api/thuc/layout/findOrder/' + ${item.id}}">Chi Tiết Đơn Hàng</a>
+</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <!-- Previous page link -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{'/donhang?page=' + ${currentPage - 1}}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <!-- Page number links -->
+            <li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${pageNumber == currentPage} ? 'active' : ''" class="page-item">
+                <a class="page-link" th:href="@{'/donhang?page=' + ${pageNumber}}"
+                   th:text="${pageNumber + 1}"></a>
+            </li>
+
+            <!-- Next page link -->
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{'/donhang?page=' + ${currentPage + 1}}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+</body>
+</html>

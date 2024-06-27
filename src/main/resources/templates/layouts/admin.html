@@ -148,7 +148,7 @@
                 </h6>
                 <ul class="nav flex-column mb-2">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="@{/api/thuc/layout/size}" style="color: black">
+                        <a class="nav-link active" aria-current="page" th:href="@{/api/thuc/layout/donhang}" style="color: black">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-1-circle-fill" viewBox="0 0 16 16">
                                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M9.283 4.002H7.971L6.072 5.385v1.271l1.834-1.318h.065V12h1.312z"/>
                             </svg>
@@ -215,6 +215,43 @@
         </main>
     </div>
 </div>
+
+
+<script>
+    function updateOrderStatus(id) {
+        const newStatus = 'Đang Chuẩn Bị'; // Set the new status here
+
+        // Hộp thoại xác nhận
+        const confirmUpdate = confirm('Bạn có muốn cập nhật trạng thái đơn hàng không?');
+        if (!confirmUpdate) {
+            return; // Không làm gì nếu người dùng không đồng ý
+        }
+
+        // Gửi yêu cầu cập nhật đến server
+        fetch(`/api/thuc/order/orderdetail/${id}?status=${encodeURIComponent(newStatus)}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Updated order:', data);
+                alert('Đã cập nhật trạng thái đơn hàng thành công!');
+                // Optionally, update the UI or perform other actions after successful update
+            })
+            .catch(error => {
+                console.error('Error updating order:', error);
+                alert('Đã xảy ra lỗi trong quá trình cập nhật đơn hàng. Vui lòng thử lại sau!');
+            });
+    }
+</script>
+
 <script>
     // Danh sách các cặp sizeId và colorId
     var listSizeColors = [];

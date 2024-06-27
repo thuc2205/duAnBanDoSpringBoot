@@ -37,10 +37,9 @@
         @Value("${jwt.expiration}")
         private int EXPIRATION_TIME;
 
-        @Deprecated
+
         public String generateToken(User user) throws Exception{
             Date now = new Date();
-//            this.generateSecureKey();
             Date expiration = new Date(now.getTime() + EXPIRATION_TIME);
             try {
                 Map<String, Object> claim = new HashMap<>();
@@ -69,7 +68,6 @@
             try {
                 return Jwts.parser()
                         .setSigningKey(getSignInKey())
-                        .build()
                         .parseClaimsJws(token)
                         .getBody();
             }catch (JwtException e){
