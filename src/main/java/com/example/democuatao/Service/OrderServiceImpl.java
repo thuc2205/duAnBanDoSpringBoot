@@ -14,6 +14,7 @@ import com.example.democuatao.repositories.UserRepo;
 import com.shopcuatao.bangiay.exeption.DataNotFound;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -94,6 +95,12 @@ public class OrderServiceImpl implements IOrderService{
     public Page<Orders> findByStatus(Pageable pageable) {
         return orderRepo.findOrdersByStatus(pageable);
     }
+    public Page<Orders> findByStatus2(Pageable pageable) {
+        return orderRepo.findOrdersByStatus2(pageable);
+    }
+    public Page<Orders> findByStatus3(Pageable pageable) {
+        return orderRepo.findOrdersByStatus3(pageable);
+    }
 
     @Override
     @Transactional
@@ -128,4 +135,6 @@ public class OrderServiceImpl implements IOrderService{
     public void deleteOrder(int id) {
 
     }
+
+
 }

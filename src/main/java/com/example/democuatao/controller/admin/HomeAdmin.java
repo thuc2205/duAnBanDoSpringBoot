@@ -62,13 +62,37 @@ public class HomeAdmin {
         model.addAttribute("brands", brandService.getAllReal());
         return "admins/brands";
     }
-    @GetMapping("donhang")
+    @GetMapping("/donhang")
     public String xacNhanDonHang(Model model,
                                  @RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "10") int limit
                                  ){
         Pageable pageable = PageRequest.of(page, limit);
         Page<Orders> ordersPage = orderService.findByStatus(pageable);
+        model.addAttribute("orders", ordersPage.getContent()); // Lấy danh sách đơn hàng từ Page
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", ordersPage.getTotalPages());
+        return "admins/xacNhan4DonHang";
+    }
+    @GetMapping("/donhangCb")
+    public String xacNhanDonHangcb(Model model,
+                                 @RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "10") int limit
+                                 ){
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<Orders> ordersPage = orderService.findByStatus2(pageable);
+        model.addAttribute("orders", ordersPage.getContent()); // Lấy danh sách đơn hàng từ Page
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", ordersPage.getTotalPages());
+        return "admins/xacNhan4DonHang";
+    }
+    @GetMapping("/donhangDg")
+    public String xacNhanDonHangDg(Model model,
+                                 @RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "10") int limit
+                                 ){
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<Orders> ordersPage = orderService.findByStatus3(pageable);
         model.addAttribute("orders", ordersPage.getContent()); // Lấy danh sách đơn hàng từ Page
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", ordersPage.getTotalPages());
@@ -127,12 +151,25 @@ public class HomeAdmin {
 
         return "categories";
     }
+    @GetMapping("/thong-ke")
+    public String thongke(Model model) {
+        Float tong = orderRepo.getTotalMoneyForSuccessfulOrdersToday();
+        System.out.println(tong);
+        model.addAttribute("tong", tong != null ? tong : 0);
+        return "admins/thongke";
+    }
 
     @GetMapping("/findOrder/{id}")
-    public String findByOrder(Model model,@PathVariable Integer id){
+    public String findByOrder(Model model, @PathVariable Integer id) {
         Optional<Orders> orders = orderRepo.findById(id);
-        model.addAttribute("orders",orders.get());
+        if (orders.isPresent()) {
+            Orders order = orders.get();
+            model.addAttribute("orders", order);
+            model.addAttribute("id", id);
+            model.addAttribute("status", order.getStatus()); // Truyền trạng thái đơn hàng
+        }
         return "admins/chiTietXacNhanDonHang";
     }
+
 
 }

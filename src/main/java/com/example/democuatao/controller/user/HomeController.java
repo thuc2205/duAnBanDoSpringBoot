@@ -58,7 +58,7 @@ public class HomeController {
         return "layoutUsers/gioHang";
     }
 
-    @GetMapping("dssp")
+    @GetMapping("/dssp")
     public String getAll(
             @RequestParam(defaultValue = "0", name = "category_id") int categoryId,
             @RequestParam(defaultValue = "0") int page,
@@ -82,14 +82,15 @@ public class HomeController {
         model.addAttribute("currentPage", page);
 
         if (userId != null) {
-            Integer order = orderRepo.findOrderIdWhereUserIdAndStatus(userId);
-            if (order != null) {
-                model.addAttribute("orderId", order);
+            List<Integer> orders = orderRepo.findOrderIdWhereUserIdAndStatus(userId);
+            if (!orders.isEmpty()) {
+                model.addAttribute("orderId", orders.get(0));
             }
         }
 
         return "layoutUsers/dssp";
     }
+
 
     private Integer getUserIdFromCookies(Cookie[] cookies) {
         if (cookies != null) {
@@ -241,6 +242,7 @@ public class HomeController {
     public String displayOrderComfirm() {
         return "layoutUsers/muaHang";
     }
+
 
 
 }

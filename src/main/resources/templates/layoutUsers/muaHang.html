@@ -405,7 +405,7 @@
                                                 </div>
 
                                             </form>
-                                            <form th:if="${orders != null}"  th:action="@{'/api/thuc/order/update/'+ ${userId}}" th:method="post" th:object="${orderDTO}">
+                                            <form id="orderForm" th:if="${orders != null}" th:action="@{'/api/thuc/order/update/'+ ${userId}}" th:method="post" th:object="${orderDTO}">
                                                 <div>
                                                     <div class="row">
                                                         <div class="col-lg-4">
@@ -592,9 +592,7 @@
                     <!-- end col -->
                     <div class="col">
                         <div class="text-end mt-2 mt-sm-0">
-                            <a href="#" class="btn btn-success">
-                                <i class="mdi mdi-cart-outline me-1"></i> Procced
-                            </a>
+
                         </div>
                     </div>
                     <!-- end col -->

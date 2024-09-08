@@ -49,7 +49,6 @@ public class OrderDetailController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrderStatus(@PathVariable int id, @RequestParam String status) {
         try {
-            // Call the service method to update order status
             Orders updatedOrder = orderService.updateOrderStatus(id, status);
 
             if (updatedOrder != null) {

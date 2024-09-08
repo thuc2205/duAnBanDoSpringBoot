@@ -4,7 +4,7 @@
       layout:decorate="~{layouts/admin.html}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Quản lý đơn hàng</title>
     <style>
         .animated-button {
             position: relative;
@@ -100,21 +100,17 @@
 <div class="container">
     <h2>Quản lý đơn hàng</h2>
 
-    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-    <label class="form-check-label  text-bg-dark" for="exampleRadios2">
-        Chờ Xác nhận
-    </label>
-
-
-    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-    <label class="form-check-label  text-bg-dark" for="exampleRadios2">
-        Giao Hàng
-    </label>
-
-    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-    <label class="form-check-label  text-bg-dark" for="exampleRadios2">
-        Thành CÔng
-    </label>
+    <div class="btn-group" role="group" aria-label="Order">
+        <a class="btn btn-secondary"
+           th:href="@{/api/thuc/layout/donhang(page=0, limit=10, apiType='donhang')}"
+           th:classappend="${apiType == 'donhang'} ? 'active' : ''">Chờ Xác Nhận</a>
+        <a class="btn btn-secondary"
+           th:href="@{/api/thuc/layout/donhangCb(page=0, limit=10, apiType='donhangCb')}"
+           th:classappend="${apiType == 'donhangCb'} ? 'active' : ''">Chuẩn Bị</a>
+        <a class="btn btn-secondary"
+           th:href="@{/api/thuc/layout/donhangDg(page=0, limit=10, apiType='donhangDg')}"
+           th:classappend="${apiType == 'donhangDg'} ? 'active' : ''">Đang giao</a>
+    </div>
 
     <table class="table">
         <thead>
@@ -124,9 +120,9 @@
             <th>Tên</th>
             <th>Tổng Sp</th>
             <th>Tổng Tiền</th>
-            <th>ngày tạo</th>
-            <th>trạng thai</th>
-            <th>hành động</th>
+            <th>Ngày tạo</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
@@ -139,40 +135,55 @@
             <td th:text="${item.orderDate}"></td>
             <td><span class="btn btn-success" th:text="${item.status}"></span></td>
             <td>
-                <button onclick="updateOrderStatus(${item.id});">Xác Nhận</button>
-
-
-                <span class="text"><a style="text-decoration: none"
-                                      th:href="@{'/api/thuc/layout/findOrder/' + ${item.id}}">Chi Tiết Đơn Hàng</a>
-</span>
+                <button th:onclick="'updateOrderStatus(' + ${item.id} + ')'"class="btn btn-primary">Xác Nhận Đơn</button>
+                <button th:onclick="'updateOrderStatusHuy(' + ${item.id} + ')'" class="btn btn-danger">Hủy Đơn</button>
+                <span class="text"><a style="text-decoration: none" th:href="@{'/api/thuc/layout/findOrder/' + ${item.id}}">Chi Tiết Đơn Hàng</a></span>
             </td>
         </tr>
         </tbody>
     </table>
+
+
     <nav aria-label="Page navigation example">
         <ul class="pagination">
-            <!-- Previous page link -->
-            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{'/donhang?page=' + ${currentPage - 1}}" aria-label="Previous">
+            <!-- Liên kết trang trước -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
+                <a class="page-link"
+                   th:href="@{${apiType == 'donhang' ? '/api/thuc/layout/donhang?page=' + (currentPage - 1) + '&limit=10' :
+               apiType == 'donhangCb' ? '/api/thuc/layout/donhangCb?page=' + (currentPage - 1) + '&limit=10' :
+               '/api/thuc/layout/donhangDg?page=' + (currentPage - 1) + '&limit=10'}}"
+                   aria-label="Previous"
+                   th:if="${currentPage > 0}">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
 
-            <!-- Page number links -->
+            <!-- Liên kết số trang -->
             <li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
-                th:classappend="${pageNumber == currentPage} ? 'active' : ''" class="page-item">
-                <a class="page-link" th:href="@{'/donhang?page=' + ${pageNumber}}"
-                   th:text="${pageNumber + 1}"></a>
+                th:classappend="${pageNumber == currentPage} ? 'active' : ''"
+                class="page-item">
+                <a class="page-link"
+                   th:href="@{${apiType == 'donhang' ? '/api/thuc/layout/donhang?page=' + pageNumber + '&limit=10' :
+               apiType == 'donhangCb' ? '/api/thuc/layout/donhangCb?page=' + pageNumber + '&limit=10' :
+               '/api/thuc/layout/donhangDg?page=' + pageNumber + '&limit=10'}}"
+                   th:text="${pageNumber + 1}">
+                </a>
             </li>
 
-            <!-- Next page link -->
-            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{'/donhang?page=' + ${currentPage + 1}}" aria-label="Next">
+            <!-- Liên kết trang tiếp theo -->
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''">
+                <a class="page-link"
+                   th:href="@{${apiType == 'donhang' ? '/api/thuc/layout/donhang?page=' + (currentPage + 1) + '&limit=10' :
+               apiType == 'donhangCb' ? '/api/thuc/layout/donhangCb?page=' + (currentPage + 1) + '&limit=10' :
+               '/api/thuc/layout/donhangDg?page=' + (currentPage + 1) + '&limit=10'}}"
+                   aria-label="Next"
+                   th:if="${currentPage < totalPages - 1}">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
         </ul>
     </nav>
+
 </div>
 
 </body>
